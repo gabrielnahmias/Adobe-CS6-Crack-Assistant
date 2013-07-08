@@ -276,37 +276,7 @@ namespace Utilities
         /// </summary>
         /// <param name="file">The FileInfo object to check.</param>
         /// <returns>True if the file is locked and false if not.</returns>
-        public static bool IsFileLocked(FileInfo file)
-        {
-            FileStream stream = null;
-
-            try
-            {
-                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-            }
-            catch (IOException)
-            {
-                // The file is unavailable because it is either:
-                //  - Still being written to
-                //  - Being processed by another thread
-                //  - It does not exist (has already been processed)
-                return true;
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Close();
-            }
-
-            // File is not locked.
-            return false;
-        }
-        /// <summary>
-        /// Checks if a file is being used by another process or otherwise.
-        /// </summary>
-        /// <param name="file">The path to the file to check.</param>
-        /// <returns>True if the file is locked and false if not.</returns>
-        public static bool IsFileLocked(string sFilename)
+        public static bool IsLocked(string sFilename)
         {
             FileInfo file = new FileInfo(sFilename);
             FileStream stream = null;
