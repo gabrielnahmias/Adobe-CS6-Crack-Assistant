@@ -1,0 +1,7 @@
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\bin\Debug\ACS6CA.exe.config
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Debug\AdobeCS6CrackAssistant.Properties.Resources.resources
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Debug\AdobeCS6CrackAssistant.csproj.GenerateResource.Cache
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\bin\Debug\ACS6CA.exe
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\bin\Debug\ACS6CA.pdb
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Debug\ACS6CA.exe
+C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Debug\ACS6CA.pdb
