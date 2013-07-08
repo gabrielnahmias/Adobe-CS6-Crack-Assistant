@@ -257,12 +257,12 @@ namespace AdobeCS6CrackAssistant
 
                 FileInfo fiAmt = new FileInfo(sAmtPath);
 
-                if (fiAmt.Exists/* && !fiAmt.IsReadOnly*/)
+                if (fiAmt.Exists)
                 {
                     fiAmt.IsReadOnly = false;
 
                     // Check if the file is being used by another process.
-                    if (!FileHelper.IsFileLocked(sAmtPath))
+                    if (!FileHelper.IsLocked(sAmtPath))
                     {
                         // Checks if a 64-bit OS is being used. If so, the 64-bit file is copied, otherwise, the 32-bit one.
                         // These are the best indicators of this condition of which I could think. If x86 program folder exists,
@@ -292,12 +292,12 @@ namespace AdobeCS6CrackAssistant
 
                     Console.WriteLine("\"{0}\" does not exist.", sAmtPath);
 
-                    if (fiX86Amt.Exists/*Directory.Exists(sX86Dir)*/)
+                    if (fiX86Amt.Exists)
                     {
                         fiX86Amt.IsReadOnly = false;
 
                         // Check if the file is being used by another process.
-                        if (!FileHelper.IsFileLocked(new FileInfo(sX86AmtPath)))
+                        if (!FileHelper.IsLocked(sX86AmtPath))
                         {
                             Console.WriteLine("Copying 32-bit \"amtlib.dll\" to \"{0}\"...", sX86Dir);
                             File.WriteAllBytes(sX86AmtPath, AdobeCS6CrackAssistant.Properties.Resources.amtlib_32);
@@ -309,7 +309,7 @@ namespace AdobeCS6CrackAssistant
                     }
                     else
                     {
-                        Console.WriteLine("\"{0}\" does not exist or is read-only.", sX86AmtPath);
+                        Console.WriteLine("\"{0}\" does not exist.", sX86AmtPath);
                     }
                 }
             }
