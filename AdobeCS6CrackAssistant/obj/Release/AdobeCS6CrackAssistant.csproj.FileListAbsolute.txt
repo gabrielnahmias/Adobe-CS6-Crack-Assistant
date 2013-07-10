@@ -5,4 +5,3 @@ C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\ob
 C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Release\AdobeCS6CrackAssistant.csproj.GenerateResource.Cache
 C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Release\ACS6CA.exe
 C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Release\ACS6CA.pdb
-C:\Users\Gabriel\Source Code\C#\AdobeCS6CrackAssistant\AdobeCS6CrackAssistant\obj\Release\AdobeCS6CrackAssistant.csprojResolveAssemblyReference.cache

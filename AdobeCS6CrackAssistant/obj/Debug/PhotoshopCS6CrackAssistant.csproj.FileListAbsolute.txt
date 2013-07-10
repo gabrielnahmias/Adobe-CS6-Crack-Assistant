@@ -1,9 +1,0 @@
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Debug\PhotoshopCS6CrackAssistant.exe.config
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Debug\PhotoshopCS6CrackAssistant.exe
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Debug\PhotoshopCS6CrackAssistant.pdb
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Debug\PhotoshopCS6CrackAssistant.csprojResolveAssemblyReference.cache
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Debug\PhotoshopCS6CrackAssistant.exe
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Debug\PhotoshopCS6CrackAssistant.pdb
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Debug\PhotoshopCS6CrackAssistant.Properties.Resources.resources
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Debug\PhotoshopCS6CrackAssistant.csproj.GenerateResource.Cache
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Debug\PSCS6CA.exe.config

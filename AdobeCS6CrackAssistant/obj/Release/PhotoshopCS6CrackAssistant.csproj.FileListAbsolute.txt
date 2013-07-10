@@ -1,7 +1,0 @@
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Release\PSCS6CA.exe.config
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Release\PSCS6CA.exe
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\bin\Release\PSCS6CA.pdb
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Release\PhotoshopCS6CrackAssistant.Properties.Resources.resources
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Release\PhotoshopCS6CrackAssistant.csproj.GenerateResource.Cache
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Release\PSCS6CA.exe
-C:\Users\Gabriel\Source Code\C#\PhotoshopCS6CrackAssistant\PhotoshopCS6CrackAssistant\obj\Release\PSCS6CA.pdb

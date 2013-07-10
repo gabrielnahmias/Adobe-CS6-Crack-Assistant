@@ -63,9 +63,9 @@ namespace AdobeCS6CrackAssistant.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] amtlib_32 {
+        internal static byte[] amtlib32 {
             get {
-                object obj = ResourceManager.GetObject("amtlib_32", resourceCulture);
+                object obj = ResourceManager.GetObject("amtlib32", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -73,9 +73,29 @@ namespace AdobeCS6CrackAssistant.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] amtlib_64 {
+        internal static byte[] amtlib32o {
             get {
-                object obj = ResourceManager.GetObject("amtlib_64", resourceCulture);
+                object obj = ResourceManager.GetObject("amtlib32o", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] amtlib64 {
+            get {
+                object obj = ResourceManager.GetObject("amtlib64", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] amtlib64o {
+            get {
+                object obj = ResourceManager.GetObject("amtlib64o", resourceCulture);
                 return ((byte[])(obj));
             }
         }
