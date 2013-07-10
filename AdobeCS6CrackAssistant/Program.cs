@@ -1,14 +1,21 @@
-﻿using System;
+﻿using AdobeCS6CrackAssistant.Properties;
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Utilities;
+
+/* TODO:
+ *  - Detect the parent process (CMD or Explorer) and conditionally show "Done." message.
+ *  - Make it so if /c or /u options are used, then only gather the DLL paths for those directories (less time used).
+ */
 
 namespace AdobeCS6CrackAssistant
 {
@@ -16,309 +23,277 @@ namespace AdobeCS6CrackAssistant
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("ParentPid: " + Process.GetProcessById(ProcessHelper.Parent(Process.GetCurrentProcess()).Id).MainWindowTitle);
-            
+            byte[] bAmt64 = Resources.amtlib64,
+                   bAmt32 = Resources.amtlib32;
+
             string sTitle = ApplicationInfo.Title,
                    sProgFilesDir = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
                    sX86ProgFilesDir = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-            // Constants and constant-like strings.
-            string TEXT_WELCOME = String.Format("Welcome to the {0}!\n" +
-                                                "This will automatically copy \"amtlib.dll\" into the\n" +
-                                                "folders it should be in for everything to work.\n\n", sTitle);
-
-            List<int> lWhich = new List<int> { };
+            List<int> lWhich = new List<int>();
 
             List<string> lArgs = new List<string>(args),
-                         lNames = new List<string> { };
+                         lNames = new List<string>(),
+                         lPaths = new List<string>();
 
-            List<string> lDirs = new List<string> { sProgFilesDir + @"\Adobe\Adobe Dreamweaver CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Fireworks CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Flash CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe InDesign CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Prelude CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Audition CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Illustrator CS6\Support Files\Contents\Windows",
-                                                    sProgFilesDir + @"\Adobe\Adobe Flash Builder 4.6\eclipse\plugins\com.adobe.flexide.amt_4.6.1.335153\os\win32\x86",
-                                                    sProgFilesDir + @"\Adobe\Adobe Photoshop CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Bridge CS6",
-                                                    sProgFilesDir + @"\Adobe\Acrobat 10.0\Acrobat",
-                                                    sProgFilesDir + @"\Adobe\Adobe SpeedGrade CS6\bin",
-                                                    sProgFilesDir + @"\Adobe\Adobe Encore CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe Premiere CS6",
-                                                    sProgFilesDir + @"\Adobe\Adobe After Effects CS6\Support Files",
-                                                    sProgFilesDir + @"\Adobe\Adobe Media Encoder CS6" };
-            
             ConsoleSpinner spinner = new ConsoleSpinner();
+            
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationToken ct = tokenSource.Token;
+
+            // Constants and constant-like strings.
+            string TEXT_USAGE = "Copies cracked versions of \"amtlib.dll\" to the proper\n" +
+                                "Adobe CS6 program directories.\n\n" +
+                                "ACS6CA [/?] [/c ...] [/u [...]]\n\n" +
+                                "\t/?\t\tDisplays this help message.\n" +
+                                "\t/c ...\t\tCracks only the designated programs. They are separated\n\t\t\tby spaces and can include any of these: \n" +
+                                "\t\t\tdw or Dreamweaver, fw or Fireworks, f or Flash,\n" +
+                                "\t\t\tid or InDesign, p or Prelude, a or Audition,\n" +
+                                "\t\t\ti or Illustrator, fb or FlashBuilder, ps or Photoshop,\n" +
+                                "\t\t\tb or Bridge, c or Acrobat, sg or SpeedGrade,\n" +
+                                "\t\t\te or Encore, pr or Premiere, ae or AfterEffects,\n" +
+                                "\t\t\tme or MediaEncoder\n" +
+                                "\t/u [...]\tUncracks all (default) or only the designated programs.\n\t\t\tRefer to the list above.",
+
+                   TEXT_WELCOME = String.Format("Welcome to the {0}!\n" +
+                                                "This will automatically copy \"amtlib.dll\" into the\n" +
+                                                "folders it should be in for everything to work.\n\n", sTitle);
 
             // Set the foreground to green, the font to some tiny one, and the icon to the program's.
             Console.ForegroundColor = ConsoleColor.Green;
             //ConsoleHelper.SetConsoleFont(4);
             ConsoleHelper.SetConsoleIcon(Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location));
-
+            
             Console.Title = sTitle + " v" + ApplicationInfo.Version.ToString();
 
-            if (lArgs.Count >= 1)
+            if (lArgs.Count >= 1 && lArgs[0].Equals("/?"))
             {
-                if (lArgs[0] != "/?")
-                {
-                    Console.Write(TEXT_WELCOME);
-                }
-            }
-            else
-            {
-                Console.Write(TEXT_WELCOME);
+                Console.Write(TEXT_USAGE);
+                goto end;
             }
 
+            Console.Write(TEXT_WELCOME);
+            ConsoleHelper.Pause();
+            Console.Write("\n\n");
+
+            // Make the cursor invisible while the loading animation is running so
+            // it doesn't move with the text.
+            Console.CursorVisible = false;
+
+            // Start the loading animation while files are being found.
+            Task task = Task.Factory.StartNew(() =>
+            {
+                Console.Write("Finding existing copies of \"amtlib.dll\"");
+
+                while (spinner != null)
+                    spinner.Turn();
+            }, ct);
+
+            // Gather the existing paths to amtlib.dll.
+            lPaths = FileHelper.FindFiles("amtlib.dll", sProgFilesDir);
+            lPaths.AddRange(FileHelper.FindFiles("amtlib.dll", sX86ProgFilesDir));
+
+            // Stop the spinner, kill it, and cancel the task.
+            spinner.Clear();
+            spinner = null;
+            tokenSource.Cancel();
+
+            Console.Write("\n\n");
+
+            Console.CursorVisible = true;
+
+            // Handle command-line arguments.
             if (lArgs.Count >= 1)
             {
                 string sCommand = lArgs[0].ToLower();
                 switch (sCommand)
                 {
                     case "/c":
-                    case "/crack":
-                        List<string> lTemp = new List<string> { };
+                    case "/u":
+                        List<string> lTemp = new List<string>();
+
+                        // If /u is specified, assign the original files to the byte arrays.
+                        if (sCommand.Equals("/u"))
+                        {
+                            bAmt64 = Resources.amtlib64o;
+                            bAmt32 = Resources.amtlib32o;
+                        }
 
                         if (lArgs.Count > 1)
                         {
                             for (int i = 1; i < lArgs.Count; i++)
                             {
-                                string arg = lArgs[i].ToLower();
+                                int iPlace = -1;
+                                string arg = lArgs[i].ToLower(),
+                                       sProg = "";
+
                                 switch (arg)
                                 {
                                     case "dw":
                                     case "dreamweaver":
-                                        lWhich.Add(0);
-                                        lNames.Add("Dreamweaver");
+                                        sProg = "Dreamweaver";
                                         break;
                                     case "fw":
                                     case "fireworks":
-                                        lWhich.Add(1);
-                                        lNames.Add("Fireworks");
+                                        sProg = "Fireworks";
                                         break;
                                     case "f":
                                     case "flash":
-                                        lWhich.Add(2);
-                                        lNames.Add("Flash");
+                                        sProg = "Flash";
                                         break;
                                     case "id":
                                     case "indesign":
-                                        lWhich.Add(3);
-                                        lNames.Add("InDesign");
+                                        sProg = "InDesign";
                                         break;
                                     case "p":
                                     case "prelude":
-                                        lWhich.Add(4);
-                                        lNames.Add("Prelude");
+                                        sProg = "Prelude";
                                         break;
                                     case "a":
                                     case "audition":
-                                        lWhich.Add(5);
-                                        lNames.Add("Audition");
+                                        sProg = "Audition";
                                         break;
                                     case "i":
                                     case "illustrator":
-                                        lWhich.Add(6);
-                                        lNames.Add("Illustrator");
+                                        sProg = "Illustrator";
                                         break;
                                     case "fb":
                                     case "flashbuilder":
-                                        lWhich.Add(7);
-                                        lNames.Add("Flash Builder");
+                                        sProg = "Flash Builder";
                                         break;
                                     case "ps":
                                     case "photoshop":
-                                        lWhich.Add(8);
-                                        lNames.Add("Photoshop");
+                                        sProg = "Photoshop";
                                         break;
                                     case "b":
                                     case "bridge":
-                                        lWhich.Add(9);
-                                        lNames.Add("Bridge");
+                                        sProg = "Bridge";
                                         break;
                                     case "ac":
                                     case "acrobat":
-                                        lWhich.Add(10);
-                                        lNames.Add("Acrobat");
+                                        sProg = "Acrobat";
                                         break;
                                     case "sg":
                                     case "speedgrade":
-                                        lWhich.Add(11);
-                                        lNames.Add("SpeedGrade");
+                                        sProg = "SpeedGrade";
                                         break;
                                     case "e":
                                     case "encore":
-                                        lWhich.Add(12);
-                                        lNames.Add("Encore");
+                                        sProg = "Encore";
                                         break;
                                     case "pr":
                                     case "premiere":
-                                        lWhich.Add(13);
-                                        lNames.Add("Photoshop");
+                                        sProg = "Photoshop";
                                         break;
                                     case "ae":
                                     case "aftereffects":
-                                        lWhich.Add(14);
-                                        lNames.Add("After Effects");
+                                        sProg = "After Effects";
                                         break;
                                     case "me":
                                     case "mediaencoder":
-                                        lWhich.Add(15);
-                                        lNames.Add("Media Encoder");
+                                        sProg = "Media Encoder";
                                         break;
                                     default:
                                         lWhich.Add(-1);
+                                        goto check;
                                         break;
                                 }
+
+                                iPlace = lPaths.FindIndex(sProg);
+
+                                lWhich.Add(iPlace);
+                                lNames.Add(sProg);
                             }
 
+                            check:
                             if (lWhich.Contains(-1))
                             {
-                                Console.WriteLine("You have some errors in your program list. Try again.");
+                                Console.Write("You have some errors in your program list. Try again.");
                                 goto end;
                             }
 
                             int iCount = lWhich.Count;
-                            
-                            Console.Write("You have selected to crack ");
 
+                            Console.Write("You have selected to " + ((sCommand.Equals("/u")) ? "un" : "") + "crack ");
+
+                            // Add the selected programs' amtlib paths to the temporary list.
                             for (int i = 0; i < iCount; i++)
                             {
-                                lTemp.Add(lDirs[lWhich[i]]);
+                                lTemp.Add(lPaths[lWhich[i]]);
                                 Console.Write("{0}{1}{2}", ((i == iCount - 1) ? ((iCount == 1) ? "" : (((iCount == 2) ? " " : "") + "and ")) : ""), lNames[i], ((i != iCount - 1) ? ((iCount == 2) ? "" : ", ") : ""));
                             }
 
-                            Console.Write(".");
+                            Console.Write(".\n\n");
 
-                            lDirs = lTemp;
+                            // Overwrite the main path list with the temporary one.
+                            lPaths = lTemp;
                         }
                         else
                         {
-                            Console.WriteLine("You must select programs to crack! Use ACS6CA /?\n" +
-                                              "to get a list of the available options.");
-                            goto end;
+                            if (lArgs.Count >= 1 && lArgs[0].Equals("/u"))
+                                Console.Write("Uncracking...\n\n");
+
+                            // No programs specified.
+                            goto cracking;
                         }
-
-                        Console.Write("\n\n");
                         break;
-                    case "/?":
-                        Console.WriteLine("Copies cracked versions of \"amtlib.dll\" to the proper\n" +
-                                          "Adobe CS6 program directories.\n\n" +
-                                          "ACS6CA [/?] [/c(rack) programs]\n\n" +
-                                           "\t/?\t\tDisplays this help message.\n" +
-                                          "\t/c programs\tCracks only the designated programs. They are separated\n\t\t\tby spaces and can include any of these: \n" +
-                                          "\t\t\tdw or Dreamweaver, fw or Fireworks, f or Flash,\n" +
-                                          "\t\t\tid or InDesign, p or Prelude, a or Audition,\n" +
-                                          "\t\t\ti or Illustrator, fb or FlashBuilder, ps or Photoshop,\n" +
-                                          "\t\t\tb or Bridge, c or Acrobat, sg or SpeedGrade,\n" +
-                                          "\t\t\te or Encore, pr or Premiere, ae or AfterEffects,\n" +
-                                          "\t\t\tme or MediaEncoder");
-                        goto end;
-                        break;
+                    // No need to handle /? here since I took care of it earlier.
+                    /*case "/?":
+                        
+                        break;*/
                 }
             }
 
-            if (lArgs.Count >= 1)
+            cracking:
+            // Loops through the list of directories. If the file exists (it has to—they are found), it
+            // detects whether the current OS is 64-bit and, if so, copies the 64-bit amtlib.dll; otherwise,
+            // it copies the 32-bit version. The same routine is performed on the list of x86 installations.
+            for (int i = 0; i < lPaths.Count; i++)
             {
-                if (lArgs[0] != "/?")
-                {
-                    ConsoleHelper.Pause();
-                    Console.Write("\n\n");
-                }
-            }
-            else
-            {
-                ConsoleHelper.Pause();
-                Console.Write("\n\n");
-            }
-
-            Console.Write("Working");
-
-            Console.CursorVisible = false;
-
-            // A little fake loading action...
-            for(int i = 0; i < 10; i++)
-                spinner.Turn();
-
-            spinner.Clear();
-
-            Console.CursorVisible = true;
-
-            Console.Write("\n\n");
-            
-            // Loops through the list of directories. If the current directory exists, it detects whether
-            // the current OS is 64-bit and, if so, copies the 64-bit amtlib.dll; otherwise, it copies the
-            // 32-bit version. If the directory does not exist, it checks whether the same directory exists
-            // within the x86 Program Files directory and, if so, copies the 32-bit file.
-            for (int i = 0; i < lDirs.Count; i++)
-            {
-                string sDir = lDirs[i],
-                       sAmtPath = sDir + @"\amtlib.dll";
-
-                FileInfo fiAmt = new FileInfo(sAmtPath);
+                string sPath = lPaths[i];
+                       
+                FileInfo fiAmt = new FileInfo(sPath);
 
                 if (fiAmt.Exists)
                 {
                     fiAmt.IsReadOnly = false;
 
                     // Check if the file is being used by another process.
-                    if (!FileHelper.IsLocked(sAmtPath))
+                    if (!FileHelper.IsLocked(sPath))
                     {
                         // Checks if a 64-bit OS is being used. If so, the 64-bit file is copied, otherwise, the 32-bit one.
                         // These are the best indicators of this condition of which I could think. If x86 program folder exists,
                         // the current platform is most assuredly 64-bit.
-                        if (Environment.Is64BitOperatingSystem/* && Directory.Exists(@"\Program Files (x86)")*/)
+                        if (Environment.Is64BitOperatingSystem && !sPath.Contains("(x86)", StringComparison.OrdinalIgnoreCase) )
                         {
-                            Console.WriteLine("Copying 64-bit \"amtlib.dll\" to \"{0}\"...", sDir);
-                            File.WriteAllBytes(sAmtPath, AdobeCS6CrackAssistant.Properties.Resources.amtlib_64);
+                            Console.WriteLine("Overwriting 64-bit \"{0}\"...", sPath);
+                            File.WriteAllBytes(sPath, bAmt64);
                         }
                         else
                         {
-                            Console.WriteLine("Copying 32-bit \"amtlib.dll\" to \"{0}\"...", sDir);
-                            File.WriteAllBytes(sAmtPath, AdobeCS6CrackAssistant.Properties.Resources.amtlib_32);
+                            Console.WriteLine("Overwriting 32-bit \"{0}\"...", sPath);
+                            File.WriteAllBytes(sPath, bAmt32);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("\"{0}\" is being used by another process. Could not copy.", sAmtPath);
+                        Console.WriteLine("\"{0}\" is being used by another process. Could not copy.", sPath);
                     }
                 }
                 else
                 {
-                    string sX86Dir = sDir.Replace(sProgFilesDir, sX86ProgFilesDir),
-                           sX86AmtPath = sX86Dir + @"\amtlib.dll";
-
-                    FileInfo fiX86Amt = new FileInfo(sX86AmtPath);
-
-                    Console.WriteLine("\"{0}\" does not exist.", sAmtPath);
-
-                    if (fiX86Amt.Exists)
-                    {
-                        fiX86Amt.IsReadOnly = false;
-
-                        // Check if the file is being used by another process.
-                        if (!FileHelper.IsLocked(sX86AmtPath))
-                        {
-                            Console.WriteLine("Copying 32-bit \"amtlib.dll\" to \"{0}\"...", sX86Dir);
-                            File.WriteAllBytes(sX86AmtPath, AdobeCS6CrackAssistant.Properties.Resources.amtlib_32);
-                        }
-                        else
-                        {
-                            Console.WriteLine("\"{0}\" is being used by another process. Could not copy.", sX86AmtPath);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("\"{0}\" does not exist.", sX86AmtPath);
-                    }
+                    // This should never happen.
+                    Console.WriteLine("\"{0}\" does not exist.", sPath);
                 }
             }
 
-
             Console.Write("\nDone.");
 
-            pause: Console.ReadKey(true);
-            end: ;
+            Console.ReadKey(true);
+
+            end:
+            Console.WriteLine();
+            Application.Exit();
         }
     }
 }
