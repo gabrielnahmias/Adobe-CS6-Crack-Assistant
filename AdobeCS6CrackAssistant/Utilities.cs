@@ -190,6 +190,7 @@ namespace Utilities
     /// </summary>
     class ConsoleSpinner
     {
+        // Private
         bool increment = true,
              loop = false;
 
@@ -309,12 +310,33 @@ namespace Utilities
         /// <param name="sFilename">The filename for which to search (can include wildcards [*]).</param>
         /// <param name="sDir">The directory in which to search.</param>
         /// <param name="soOption">Optionally, specify where to search (top directory or all [default]).</param>
-        /// <returns>An array of strings with paths to the found files.</returns>
+        /// <returns>An list of strings with paths to the found files.</returns>
         public static List<string> FindFiles(string sFilename, string sDir, SearchOption soOption = SearchOption.AllDirectories)
         {
-            List<string> lFiles = new List<string>(Directory.GetFiles(sDir, sFilename, soOption));
-
+            List<string> lFiles = Directory.GetFiles(sDir, sFilename, soOption).ToList();
             return lFiles;
+        }
+    }
+
+    /**********************************************
+     *                 LIST HELPER                *
+    /**********************************************/
+
+    static class ListHelper
+    {
+        public static int FindIndex<T>(this List<T> list, string value, bool skipMatches = false)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                string s = list[i].ToString();
+                if (s.Contains(value, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (skipMatches == false)
+                        return i;
+                }
+            }
+
+            return -1;
         }
     }
 
@@ -514,6 +536,18 @@ namespace Utilities
         public static Process Parent(this Process process)
         {
             return FindPidFromIndexedProcessName(FindIndexedProcessName(process.Id));
+        }
+    }
+
+    /**********************************************
+     *               STRING HELPER                *
+    /**********************************************/
+
+    static class StringHelper
+    {
+        public static bool Contains(this string source, string toCheck, StringComparison comp = StringComparison.OrdinalIgnoreCase)
+        {
+            return source.IndexOf(toCheck, comp) >= 0;
         }
     }
 }
