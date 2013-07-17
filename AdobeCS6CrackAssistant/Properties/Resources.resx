@@ -118,6 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="acrobat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\acrobat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="aftereffects" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\aftereffects.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="amtlib32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\amtlib32.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -129,5 +135,47 @@
   </data>
   <data name="amtlib64o" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\amtlib64o.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="audition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\audition.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bridge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\bridge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dreamweaver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\dreamweaver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="encore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\encore.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fireworks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\fireworks.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\flash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flashbuilder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\flashbuilder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="illustrator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\illustrator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="indesign" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\indesign.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="mediaencoder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\mediaencoder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="photoshop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\photoshop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="prelude" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\prelude.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="premiere" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\premiere.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="speedgrade" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\etc\progs\speedgrade.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
