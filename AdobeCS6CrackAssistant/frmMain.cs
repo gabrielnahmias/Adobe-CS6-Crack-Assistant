@@ -60,7 +60,7 @@ namespace AdobeCS6CrackAssistant
         
         private void timer_Tick(object sender, EventArgs e)
         {
-            ticks++;
+            /*ticks++;
 
             pbMain.Value1 = ticks;
             
@@ -68,7 +68,7 @@ namespace AdobeCS6CrackAssistant
             {
                 timer.Enabled = false;
                 ticks = 0;
-            }
+            }*/
         }
 
         private void CheckedChanged(object sender, EventArgs e)

@@ -49,10 +49,10 @@
             this.chkBridge = new System.Windows.Forms.CheckBox();
             this.chkAudition = new System.Windows.Forms.CheckBox();
             this.chkAfterEffects = new System.Windows.Forms.CheckBox();
-            this.pbMain = new Telerik.WinControls.UI.RadProgressBar();
+            //this.pbMain = new Telerik.WinControls.UI.RadProgressBar();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMain)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.pbMain)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCrack
@@ -333,12 +333,12 @@
             // 
             // pbMain
             // 
-            this.pbMain.Location = new System.Drawing.Point(18, 173);
+            /*this.pbMain.Location = new System.Drawing.Point(18, 173);
             this.pbMain.Name = "pbMain";
             this.pbMain.ShowProgressIndicators = true;
             this.pbMain.Size = new System.Drawing.Size(258, 24);
             this.pbMain.TabIndex = 5;
-            this.pbMain.Text = "0 %";
+            this.pbMain.Text = "0 %";*/
             // 
             // timer
             // 
@@ -351,7 +351,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(294, 244);
-            this.Controls.Add(this.pbMain);
+            //this.Controls.Add(this.pbMain);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnUncrack);
             this.Controls.Add(this.btnCrack);
@@ -359,7 +359,7 @@
             this.Name = "frmMain";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMain)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.pbMain)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -385,7 +385,7 @@
         private System.Windows.Forms.CheckBox chkBridge;
         private System.Windows.Forms.CheckBox chkAudition;
         private System.Windows.Forms.CheckBox chkAfterEffects;
-        private Telerik.WinControls.UI.RadProgressBar pbMain;
+        //private Telerik.WinControls.UI.RadProgressBar pbMain;
         private System.Windows.Forms.Timer timer;
 
     }
