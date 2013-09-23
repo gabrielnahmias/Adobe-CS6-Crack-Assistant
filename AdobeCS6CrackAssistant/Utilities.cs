@@ -273,6 +273,26 @@ namespace Utilities
     class FileHelper
     {
         /// <summary>
+        /// Detects if the current user has write access to a folder.
+        /// </summary>
+        /// <param name="sFolderPath">The folder path.</param>
+        /// <returns>True if the user does have access and false if not.</returns>
+        public static bool HaveWriteAccessToFolder(string sFolderPath)
+        {
+            try
+            {
+                // Attempt to get a list of security permissions from the folder. 
+                // This will raise an exception if the path is read only or do not have access to view the permissions. 
+                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(sFolderPath);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Checks if a file is being used by another process or otherwise.
         /// </summary>
         /// <param name="file">The FileInfo object to check.</param>
@@ -313,8 +333,13 @@ namespace Utilities
         /// <returns>An list of strings with paths to the found files.</returns>
         public static List<string> FindFiles(string sFilename, string sDir, SearchOption soOption = SearchOption.AllDirectories)
         {
-            List<string> lFiles = Directory.GetFiles(sDir, sFilename, soOption).ToList();
-            return lFiles;
+            // Does the user have write access?
+            if (FileHelper.HaveWriteAccessToFolder(sDir))
+            {
+                List<string> lFiles = Directory.GetFiles(sDir, sFilename, soOption).ToList();
+                return lFiles;
+            }
+            return new List<string>();
         }
     }
 
@@ -324,12 +349,20 @@ namespace Utilities
 
     static class ListHelper
     {
-        public static int FindIndex<T>(this List<T> list, string value, bool skipMatches = false)
+        /// <summary>
+        /// Finds an index in a list that contains the specified string.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">The list to search.</param>
+        /// <param name="value">The value for which to search.</param>
+        /// <param name="skipMatches">Skip matches.</param>
+        /// <returns>The index if found and -1 otherwise.</returns>
+        public static int FindIndex<T>(this List<T> list, string value, bool skipMatches = false, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             for (int i = 0; i < list.Count; i++)
             {
                 string s = list[i].ToString();
-                if (s.Contains(value, StringComparison.OrdinalIgnoreCase))
+                if (s.Contains(value, comparison))
                 {
                     if (skipMatches == false)
                         return i;
@@ -337,6 +370,19 @@ namespace Utilities
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Tests if a list is empty.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">The list to test.</param>
+        /// <returns>True if empty and false otherwise.</returns>
+        public static Boolean IsEmpty<T>(this IEnumerable<T> source)
+        {
+            if (source == null)
+                return true; // or throw an exception
+            return !source.Any();
         }
     }
 
