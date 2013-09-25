@@ -15,6 +15,10 @@ using Utilities;
 /* TODO:
  *  - Detect the parent process (CMD or Explorer) and conditionally show "Done." message.
  *  - Make it so if /c or /u options are used, then only gather the DLL paths for those directories (less time used).
+ *    One draft of this idea:
+ *      Get each program's directory name (on a local install or online), and store them somehow, then, in the switch
+ *      block, or near it, add the program's directory path name to the program files base (sProgDir), and add that to
+ *      a list and repeat. The list will eventually overwrite the main one (lPaths).
  */
 
 namespace AdobeCS6CrackAssistant
@@ -23,7 +27,8 @@ namespace AdobeCS6CrackAssistant
     {
         static void Main(string[] args)
         {
-            byte[] bAmt64 = Resources.amtlib64,
+            byte[] bAcrobat = Resources.Acrobat,
+                   bAmt64 = Resources.amtlib64,
                    bAmt32 = Resources.amtlib32;
 
             string sTitle = ApplicationInfo.Title,
@@ -42,8 +47,8 @@ namespace AdobeCS6CrackAssistant
             CancellationToken ct = tokenSource.Token;
 
             // Constants and constant-like strings.
-            string TEXT_USAGE = "Copies cracked versions of \"amtlib.dll\" to the proper\n" +
-                                "Adobe CS6 program directories.\n\n" +
+            string TEXT_USAGE = "Copies cracked versions of certain DLLs to the proper\n" +
+                                "Adobe CS6 program directories and allows reversion.\n\n" +
                                 "ACS6CA [/?] [/c ...] [/u [...]]\n\n" +
                                 "\t/?\t\tDisplays this help message.\n" +
                                 "\t/c ...\t\tCracks only the designated programs. They are separated\n\t\t\tby spaces and can include any of these: \n" +
@@ -76,6 +81,8 @@ namespace AdobeCS6CrackAssistant
             ConsoleHelper.Pause();
             Console.Write("\n\n");
 
+            # region Spinner (dots-based loading animation)
+
             // Make the cursor invisible while the loading animation is running so
             // it doesn't move with the text.
             Console.CursorVisible = false;
@@ -101,6 +108,8 @@ namespace AdobeCS6CrackAssistant
             Console.Write("\n\n");
 
             Console.CursorVisible = true;
+
+            # endregion Spinner (dots-based loading animation)
 
             // Handle command-line arguments.
             if (lArgs.Count >= 1)
@@ -194,6 +203,7 @@ namespace AdobeCS6CrackAssistant
                                         sProg = "Media Encoder";
                                         break;
                                     default:
+                                        // Something not accounted for, add an error indicator to the list of which ones to add.
                                         lWhich.Add(-1);
                                         goto check;
                                         break;
@@ -245,51 +255,73 @@ namespace AdobeCS6CrackAssistant
             }
 
             cracking:
-            // Loops through the list of directories. If the file exists (it has to—they are found), it
-            // detects whether the current OS is 64-bit and, if so, copies the 64-bit amtlib.dll; otherwise,
-            // it copies the 32-bit version. The same routine is performed on the list of x86 installations.
-            for (int i = 0; i < lPaths.Count; i++)
+
+            if (!lPaths.IsEmpty())
             {
-                string sPath = lPaths[i];
-                       
-                FileInfo fiAmt = new FileInfo(sPath);
-
-                if (fiAmt.Exists)
+                // Loops through the list of directories. If the file exists (it has to—they are found), it
+                // detects whether the current OS is 64-bit and, if so, copies the 64-bit amtlib.dll; otherwise,
+                // it copies the 32-bit version. The same routine is performed on the list of x86 installations.
+                for (int i = 0; i < lPaths.Count; i++)
                 {
-                    fiAmt.IsReadOnly = false;
+                    string sPath = lPaths[i];
 
-                    // Check if the file is being used by another process.
-                    if (!FileHelper.IsLocked(sPath))
+                    if (!sPath.Contains("windowsapps"))
                     {
-                        // Checks if a 64-bit OS is being used. If so, the 64-bit file is copied, otherwise, the 32-bit one.
-                        // These are the best indicators of this condition of which I could think. If x86 program folder exists,
-                        // the current platform is most assuredly 64-bit.
-                        if (Environment.Is64BitOperatingSystem && !sPath.Contains("(x86)", StringComparison.OrdinalIgnoreCase) )
+
+                        FileInfo fiAmt = new FileInfo(sPath);
+
+                        if (fiAmt.Exists)
                         {
-                            Console.WriteLine("Overwriting 64-bit \"{0}\"...", sPath);
-                            File.WriteAllBytes(sPath, bAmt64);
+                            fiAmt.IsReadOnly = false;
+
+                            // Check if the file is being used by another process.
+                            if (!FileHelper.IsLocked(sPath))
+                            {
+                                // Checks if a 64-bit OS is being used. If so, the 64-bit file is copied, otherwise, the 32-bit one.
+                                // These are the best indicators of this condition of which I could think. If x86 program folder exists,
+                                // the current platform is most assuredly 64-bit.
+                                if (Environment.Is64BitOperatingSystem && !sPath.Contains("(x86)", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Console.WriteLine("Overwriting 64-bit \"{0}\"...", sPath);
+                                    File.WriteAllBytes(sPath, bAmt64);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Overwriting 32-bit \"{0}\"...", sPath);
+                                    File.WriteAllBytes(sPath, bAmt32);
+                                }
+                                if (sPath.Contains("Acrobat"))
+                                {
+                                    // Get the directory part of the current path and add a bit to reference the file we also need
+                                    // to overwrite, Acrobat.dll.
+                                    string sAcroPath = String.Format("{0}\\Acrobat.dll", Path.GetDirectoryName(sPath));
+                                    Console.WriteLine("Overwriting \"{0}\"...", sAcroPath);
+                                    File.WriteAllBytes(sAcroPath, bAcrobat);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("\"{0}\" is being used by another process. Could not copy.", sPath);
+                            }
                         }
                         else
                         {
-                            Console.WriteLine("Overwriting 32-bit \"{0}\"...", sPath);
-                            File.WriteAllBytes(sPath, bAmt32);
+                            // This should never happen.
+                            Console.WriteLine("\"{0}\" does not exist.", sPath);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("\"{0}\" is being used by another process. Could not copy.", sPath);
+                        Console.WriteLine("\"{0}\" cannot be accessed.", sPath);
                     }
                 }
-                else
-                {
-                    // This should never happen.
-                    Console.WriteLine("\"{0}\" does not exist.", sPath);
-                }
+            }
+            else
+            {
+                Console.WriteLine("No Adobe paths found.");
             }
 
-            Console.Write("\nDone.");
-
-            Console.ReadKey(true);
+            ConsoleHelper.Pause("\nDone. Press any key to exit.");
 
             end:
             Console.WriteLine();
