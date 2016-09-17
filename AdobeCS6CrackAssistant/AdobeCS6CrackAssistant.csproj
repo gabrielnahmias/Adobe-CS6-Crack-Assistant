@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\Acrobat.dll" />
     <None Include="Resources\amtlib64o.dll" />
     <None Include="Resources\amtlib32o.dll" />
   </ItemGroup>
